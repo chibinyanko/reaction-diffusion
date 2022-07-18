@@ -226,8 +226,8 @@
 				canvas.addEventListener("mouseup"   , onMouseUp, false); 
 				window.addEventListener("mousemove" , stopShake, false); 
 					
-				canvas.addEventListener("touchstart", onTouchStart, {passive: false});
-				canvas.addEventListener("touchmove" , onTouchMove,  {passive: false});
+				canvas.addEventListener("touchstart", onTouchStart);
+				canvas.addEventListener("touchmove" , onTouchMove);
 				canvas.addEventListener("touchend"  , onTouchEnd);	
 			}
 
