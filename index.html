@@ -117,7 +117,6 @@
 			let canvas          = null;
 			let isMouseDown     = false;
 			let isClearON       = false;
-			let isNotInit       = true;
 
 			// マウス、タップの座標
 			let position        = [];
@@ -323,13 +322,7 @@
 			}
 
 			function onTouchStart(event)
-			{
-				if (isNotInit)
-				{
-					init();
-					isNotInit = false;
-				}
-				
+			{	
 				isMouseDown = true;
 				
 				position.px = event.touches[0].pageX - event.target.getBoundingClientRect().left - getScrollPosition().x;
