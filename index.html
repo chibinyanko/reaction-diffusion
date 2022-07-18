@@ -117,6 +117,7 @@
 			let canvas          = null;
 			let isMouseDown     = false;
 			let isClearON       = false;
+			let isNotInit       = true;
 
 			// マウス、タップの座標
 			let position        = [];
@@ -226,8 +227,8 @@
 				canvas.addEventListener("mouseup"   , onMouseUp, false); 
 				window.addEventListener("mousemove" , stopShake, false); 
 					
-				canvas.addEventListener("touchstart", onTouchStart);
-				canvas.addEventListener("touchmove" , onTouchMove);
+				canvas.addEventListener("touchstart", onTouchStart, {passive: false});
+				canvas.addEventListener("touchmove" , onTouchMove,  {passive: false});
 				canvas.addEventListener("touchend"  , onTouchEnd);	
 			}
 
@@ -237,6 +238,9 @@
 				canvas.height = height;
 				mRenderer.setSize(width, height);
 				let speedUp = 2.0;
+				
+				console.log("resize: width  =", width  / speedUp);
+				console.log("resize: height =", height / speedUp);
 				
 				mTexture1 = new THREE.WebGLRenderTarget(width / speedUp, height / speedUp,
 					{
@@ -254,6 +258,9 @@
 				
 				mUniforms.screenWidth.value  = width  / speedUp;
 				mUniforms.screenHeight.value = height / speedUp;
+				
+				console.log("mUniforms.screenWidth.value   =", mUniforms.screenWidth.value);
+				console.log("mUniforms.screenHeight.value  =", mUniforms.screenHeight.value);
 			}
 
 			function render(time)
@@ -322,7 +329,13 @@
 			}
 
 			function onTouchStart(event)
-			{	
+			{
+				if (isNotInit)
+				{
+					init();
+					isNotInit = false;
+				}
+				
 				isMouseDown = true;
 				
 				position.px = event.touches[0].pageX - event.target.getBoundingClientRect().left - getScrollPosition().x;
@@ -331,10 +344,17 @@
 				position.y  = position.py;
 				
 				drawUV();
+				
+				if (event.cancelable)
+				{
+					event.preventDefault();
+				}
+				
+				event.stopPropagation();
 			}
 
 			function onTouchMove(event)
-			{
+			{			
 				if (isMouseDown)
 				{
 					position.x = event.touches[0].pageX - event.target.getBoundingClientRect().left - getScrollPosition().x;
@@ -363,8 +383,8 @@
 			// スクロール位置を取得する
 			function getScrollPosition(){
 				return {
-					"x":document.documentElement.scrollLeft || document.body.scrollLeft,
-					"y":document.documentElement.scrollTop  || document.body.scrollTop
+					"x": document.documentElement.scrollLeft || document.body.scrollLeft,
+					"y": document.documentElement.scrollTop  || document.body.scrollTop
 				};
 			}
 
@@ -390,6 +410,7 @@
 				Dv   = mUniforms.Dv.value;
 				
 				// 参考： https://stackoverflow.com/questions/30359830/how-do-i-clear-three-js-scene
+				//        https://errorsfixing.com/how-do-i-clear-three-js-scene/
 				// mScene.remove.apply(mScene, mScene.children);
 				while (mScene.children.length > 0)
 				{
