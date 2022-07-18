@@ -337,7 +337,7 @@
 			}
 
 			function onTouchMove(event)
-			{			
+			{
 				if (isMouseDown)
 				{
 					position.x = event.touches[0].pageX - event.target.getBoundingClientRect().left - getScrollPosition().x;
@@ -347,9 +347,12 @@
 					  
 					position.px = position.x;
 					position.py = position.y;
-					  
-					event.preventDefault();
-					event.stopPropagation();
+					
+					if (event.cancelable)
+					{
+						event.preventDefault();
+						event.stopPropagation();
+					}
 				}
 			}
 
