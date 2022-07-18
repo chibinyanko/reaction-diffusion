@@ -389,7 +389,11 @@
 				Dv   = mUniforms.Dv.value;
 				
 				// 参考： https://stackoverflow.com/questions/30359830/how-do-i-clear-three-js-scene
-				mScene.remove.apply(mScene, mScene.children);
+				// mScene.remove.apply(mScene, mScene.children);
+				while (mScene.children.length > 0)
+				{
+					mScene.remove(mScene.children[0]);
+				}
 				
 				init();
 				setParams();
