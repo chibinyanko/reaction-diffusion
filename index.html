@@ -22,6 +22,8 @@
 		</script>
 		
 		<script type="x-shader/x-fragment" id="gsFragmentShader">
+			precision highp float;
+			
 			varying vec2 vertUV;
 			uniform float screenWidth;
 			uniform float screenHeight;
@@ -61,6 +63,8 @@
 		</script> 
 		
 		<script type="x-shader/x-fragment" id="screenFragmentShader">
+			precision highp float;
+			
 			varying vec2 vertUV;
 			uniform float screenWidth;
 			uniform float screenHeight;
