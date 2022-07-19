@@ -158,15 +158,18 @@
 
 			function init()
 			{
-				console.log("2022-07-19 09:55");
+				console.log("2022-07-19 10:21");
 				
 				canvas = document.getElementById("myCanvas");
 				
-				// レンダラー、シーン、カメラの生成
+				// レンダラー生成
 				mRenderer = new THREE.WebGLRenderer({canvas: canvas, preserveDrawingBuffer: true});
 				
-				mScene    = new THREE.Scene();
-				mCamera   = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -10000, 10000);
+				// シーンの生成
+				mScene = new THREE.Scene();
+				
+				// カメラの生成
+				mCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -10000, 10000);
 				mCamera.position.z = 100;
 				mScene.add(mCamera);
 				
@@ -180,9 +183,9 @@
 						Dv:           {type: "f",  value: Dv   },
 						feed:         {type: "f",  value: feed },
 						kill:         {type: "f",  value: kill },
-						brush:        {type: "v2", value: new THREE.Vector2(-10, -10)}
+						brush:        {type: "v2", value: new THREE.Vector2(0.5, 0.5)}
 					};
-				
+								
 				mGSMaterial = new THREE.ShaderMaterial(
 					{
 						uniforms      : mUniforms,
@@ -199,14 +202,13 @@
 					}
 				);
 				
+				// メッシュの生成
 				let plane   = new THREE.PlaneGeometry(1.0, 1.0);
 				mScreenQuad = new THREE.Mesh(plane, mScreenMaterial);
 				mScene.add(mScreenQuad);
 				
 				resize(canvas.clientWidth, canvas.clientHeight);
-				render(0);
-				
-				mUniforms.brush.value = new THREE.Vector2(0.5, 0.5);
+				animation();				
 				
 				// イベントの設定
 				canvas.addEventListener('mousedown' , onMouseDown, false); 
@@ -250,7 +252,7 @@
 				//console.log("mUniforms.screenHeight.value  =", mUniforms.screenHeight.value);
 			}
 
-			function render(time)
+			function animation()
 			{   
 				mScreenQuad.material = mGSMaterial;
 				
@@ -276,7 +278,7 @@
 				mScreenQuad.material = mScreenMaterial;
 				
 				mRenderer.render(mScene, mCamera);
-				requestAnimationFrame(render);
+				requestAnimationFrame(animation);
 			}
 
 			function onMouseDown(event)
