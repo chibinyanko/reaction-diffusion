@@ -25,6 +25,7 @@
 			precision highp float;
 			
 			varying vec2 vertUV;
+			
 			uniform float screenWidth;
 			uniform float screenHeight;
 			uniform vec2 brush;
@@ -66,6 +67,7 @@
 			precision highp float;
 			
 			varying vec2 vertUV;
+			
 			uniform float screenWidth;
 			uniform float screenHeight;
 			uniform sampler2D tSource;
@@ -156,30 +158,10 @@
 
 			function init()
 			{
+				console.log("2022-07-19 09:55");
+				
 				canvas = document.getElementById("myCanvas");
 				
-				// フルスクリーン表示
-				document.getElementById("full_screen").addEventListener("click", function() {
-					// Chrome & Firefox v64以降
-					if (document.body.requestFullscreen) {
-						document.body.requestFullscreen();
-					// Safari & Edge & Chrome v68以前
-					} else if (document.body.webkitRequestFullscreen) {
-						document.body.webkitRequestFullscreen();
-					}
-				});
-				
-				// フルスクリーン解除
-				document.getElementById("norm_screen").addEventListener("click", function() {
-					// Chrome & Firefox v64以降
-					if (document.exitFullscreen) {
-						document.exitFullscreen();
-					// Safari & Edge & Chrome v68以前
-					} else if (document.webkitCancelFullScreen) {
-						document.webkitCancelFullScreen();
-					}
-				});
-								
 				// レンダラー、シーン、カメラの生成
 				mRenderer = new THREE.WebGLRenderer({canvas: canvas, preserveDrawingBuffer: true});
 				
@@ -234,7 +216,7 @@
 					
 				canvas.addEventListener("touchstart", onTouchStart, {passive: false});
 				canvas.addEventListener("touchmove" , onTouchMove,  {passive: false});
-				canvas.addEventListener("touchend"  , onTouchEnd);	
+				canvas.addEventListener("touchend"  , onTouchEnd);
 			}
 
 			function resize(width, height)
@@ -244,8 +226,8 @@
 				mRenderer.setSize(width, height);
 				let speedUp = 2.0;
 				
-				console.log("resize: width  =", width  / speedUp);
-				console.log("resize: height =", height / speedUp);
+				//console.log("resize: width  =", width  / speedUp);
+				//console.log("resize: height =", height / speedUp);
 				
 				mTexture1 = new THREE.WebGLRenderTarget(width / speedUp, height / speedUp,
 					{
@@ -264,8 +246,8 @@
 				mUniforms.screenWidth.value  = width  / speedUp;
 				mUniforms.screenHeight.value = height / speedUp;
 				
-				console.log("mUniforms.screenWidth.value   =", mUniforms.screenWidth.value);
-				console.log("mUniforms.screenHeight.value  =", mUniforms.screenHeight.value);
+				//console.log("mUniforms.screenWidth.value   =", mUniforms.screenWidth.value);
+				//console.log("mUniforms.screenHeight.value  =", mUniforms.screenHeight.value);
 			}
 
 			function render(time)
@@ -392,12 +374,28 @@
 					"y": document.documentElement.scrollTop  || document.body.scrollTop
 				};
 			}
+			
+			function initDrawUV()
+			{
+				for (let x = 0; x < 50; x++)
+				{
+					for (let y = 0; y < 50; y++)
+					{
+						let ux = x / 100.0;
+						let uy = y / 100.0;
+						mUniforms.brush.value = new THREE.Vector2(ux, uy);
+					}
+				}
+				//console.log("UNKO: initDrawUV");
+			}
 
 			function drawUV()
 			{
-				let ux = position.x / canvas.width * window.devicePixelRatio;
-				let uv = 1.0 - position.y / canvas.height * window.devicePixelRatio;
-				mUniforms.brush.value = new THREE.Vector2(ux, uv);
+				let ux = position.x  * window.devicePixelRatio / canvas.width;
+				let uy = 1.0 - position.y * window.devicePixelRatio / canvas.height;
+				mUniforms.brush.value = new THREE.Vector2(ux, uy);
+				//console.log("ux =", ux);
+				//console.log("uy =", uy);
 			}
 
 			function stopShake(event){
@@ -510,6 +508,8 @@
 				);
 					
 				$("#btn_clear").button();
+				
+				$("#btn_draw").button();
 			});
 						
 			function setValues(feed, kill, Du, Dv)
@@ -689,8 +689,7 @@
 			<option value="15">dot          </option>
 			<option value="16">rectangle    </option>			
 		</select>
-		<button id="full_screen">Full Screen</button>
-		<button id="norm_screen">Normal Screen</button>
+		<button id="btn_draw" onclick="initDrawUV()">Draw</button>
 	</body>
 	
 </html>
