@@ -36,13 +36,12 @@
 			uniform float Dv;
 			uniform float feed;
 			uniform float kill;
-			
-			float step_x = 1.0 / screenWidth;
-			float step_y = 1.0 / screenHeight;
-			
+						
 			void main()
 			{
-
+				float step_x = 1.0 / screenWidth;
+				float step_y = 1.0 / screenHeight;
+				
 				vec2 uv   = texture2D(tSource, vertUV).rg;
 				vec2 uv_L = texture2D(tSource, vertUV + vec2(-step_x, 0.0)).rg;
 				vec2 uv_R = texture2D(tSource, vertUV + vec2( step_x, 0.0)).rg;
@@ -56,10 +55,10 @@
 				vec2 nextUV = uv + dt * vec2(du, dv);
 				
 				vec2 diff = (vertUV - brush) / vec2(step_x, step_y);				
-                if (dot(diff, diff) < brush.x)
+               			if (dot(diff, diff) < brush.x)
 					nextUV.g = 0.9;						
 
-                gl_FragColor = vec4(nextUV.r, nextUV.g, 0.0, 1.0);
+                		gl_FragColor = vec4(nextUV.r, nextUV.g, 0.0, 1.0);
 			}
 		</script> 
 		
@@ -72,16 +71,16 @@
 			uniform float screenHeight;
 			uniform sampler2D tSource;
 			
-			vec2 texel = vec2(1.0 / screenWidth, 1.0 / screenHeight);
-			
-			vec4 c1 = vec4(0, 0, 0, 0.0);
-			vec4 c2 = vec4(1, 0, 0, 0.2);
-			vec4 c3 = vec4(0, 1, 0, 0.3);
-			vec4 c4 = vec4(0, 0, 1, 0.4);
-			vec4 c5 = vec4(1, 1, 1, 0.6);
-			
 			void main()
 			{
+				vec2 texel = vec2(1.0 / screenWidth, 1.0 / screenHeight);
+			
+				vec4 c1 = vec4(0, 0, 0, 0.0);
+				vec4 c2 = vec4(1, 0, 0, 0.2);
+				vec4 c3 = vec4(0, 1, 0, 0.3);
+				vec4 c4 = vec4(0, 0, 1, 0.4);
+				vec4 c5 = vec4(1, 1, 1, 0.6);
+			
 				float value = texture2D(tSource, vertUV).g;
 				float a;
 				vec3 col;
